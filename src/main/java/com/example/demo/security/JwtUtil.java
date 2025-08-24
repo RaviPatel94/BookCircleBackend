@@ -25,9 +25,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    /**
-     * Parse token and return Claims if valid, otherwise throw JwtException.
-     */
+
     public Claims parseClaims(String token) throws JwtException {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -36,10 +34,6 @@ public class JwtUtil {
                 .getBody();
     }
 
-    /**
-     * Safely extract username if token valid (not expired/invalid).
-     * Returns Optional.empty() if token invalid/expired.
-     */
     public Optional<String> getUsernameIfTokenValid(String token) {
         try {
             Claims claims = parseClaims(token);

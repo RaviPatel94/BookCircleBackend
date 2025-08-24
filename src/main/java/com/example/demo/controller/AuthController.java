@@ -26,8 +26,19 @@ public class AuthController {
 
 
     @PostMapping("/signup")
-    public User signup(@RequestBody User user) {
-        return userService.signup(user);
+    public ResponseEntity<?> signup(@RequestBody User user) {
+        if (user.getUsername() == null || user.getUsername().isBlank()) {
+            return ResponseEntity.badRequest().body("Username is required");
+        }
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            return ResponseEntity.badRequest().body("Email is required");
+        }
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
+            return ResponseEntity.badRequest().body("Password is required");
+        }
+
+        User saved = userService.signup(user);
+        return ResponseEntity.ok(saved);
     }
 
     @PostMapping("/signin")

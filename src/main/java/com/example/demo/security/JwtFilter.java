@@ -36,31 +36,27 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            logger.debug("Found Authorization header, token length = {}", token.length());
-
             try {
-                // Returns Optional.empty() if token invalid/expired
-                var maybeUsername = jwtUtil.getUsernameIfTokenValid(token);
+                // Extract email from token
+                var maybeEmail = jwtUtil.getUsernameIfTokenValid(token);
 
-                if (maybeUsername.isPresent() && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    String username = maybeUsername.get();
+                if (maybeEmail.isPresent() && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    String email = maybeEmail.get();
 
-                    // If you later want roles in token, parse them and populate authorities here.
-                    // For now, give a default ROLE_USER so .authenticated() endpoints pass and role checks work.
+                    // ROLE_USER is default for all authenticated users
                     List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
                     UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(username, null, authorities);
+                            new UsernamePasswordAuthenticationToken(email, null, authorities);
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                    logger.debug("JWT validated, authentication set for user: {}", username);
-                } else {
-                    if (maybeUsername.isEmpty()) {
-                        logger.debug("Token invalid or expired.");
-                    }
+                    logger.debug("JWT validated, authentication set for user: {}", email);
+                } else if (maybeEmail.isEmpty()) {
+                    logger.debug("Token invalid or expired.");
                 }
+
             } catch (Exception ex) {
-                // catch-any to avoid breaking the filter chain with an exception
                 logger.warn("Error validating token: {}", ex.getMessage());
             }
         } else {
