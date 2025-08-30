@@ -12,7 +12,7 @@ import java.util.Optional;
 public class JwtUtil {
 
     private final String SECRET_KEY = "mysecretkeymysecretkeymysecretkey123";
-    private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
+    private final long EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;
 
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
