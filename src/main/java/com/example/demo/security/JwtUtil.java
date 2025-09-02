@@ -12,7 +12,6 @@ import java.util.Optional;
 public class JwtUtil {
 
     private final String SECRET_KEY = "mysecretkeymysecretkeymysecretkey123";
-    private final long EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;
 
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
@@ -20,11 +19,9 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
-
 
     public Claims parseClaims(String token) throws JwtException {
         return Jwts.parserBuilder()
