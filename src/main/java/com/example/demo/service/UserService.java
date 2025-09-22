@@ -19,12 +19,17 @@ public class UserService {
 
     // ✅ Signup: Save new user
     public User signup(User user) {
-        // Hash the password before saving
+        if(userRepository.findByUsername(user.getUsername()).isPresent()){
+            throw new RuntimeException("Username already exits");
+        }
+        if(userRepository.findByEmail(user.getEmail()).isPresent()){
+            throw new RuntimeException("Email already used");
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
+
     }
 
-    // ✅ Signin: Validate email + password
     public boolean signin(String email, String password) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {

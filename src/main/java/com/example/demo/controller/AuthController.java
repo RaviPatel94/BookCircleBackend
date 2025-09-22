@@ -37,8 +37,12 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Password is required");
         }
 
-        User saved = userService.signup(user);
-        return ResponseEntity.ok(saved);
+        try {
+            User saved = userService.signup(user);
+            return ResponseEntity.ok(saved);
+        } catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/signin")
