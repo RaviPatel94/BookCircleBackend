@@ -36,7 +36,6 @@ public class AuthController {
         if (user.getPassword() == null || user.getPassword().isBlank()) {
             return ResponseEntity.badRequest().body("Password is required");
         }
-
         try {
             User saved = userService.signup(user);
             return ResponseEntity.ok(saved);
@@ -54,6 +53,8 @@ public class AuthController {
 
                         Map<String, Object> response = new HashMap<>();
                         response.put("token", token);
+                        response.put("user", user.getUsername());
+
                         return ResponseEntity.ok(response);
                     } else {
                         return ResponseEntity.status(401).body("Invalid credentials");

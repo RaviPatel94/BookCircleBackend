@@ -17,7 +17,6 @@ public class UserService {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    // ✅ Signup: Save new user
     public User signup(User user) {
         if(userRepository.findByUsername(user.getUsername()).isPresent()){
             throw new RuntimeException("Username already exits");
